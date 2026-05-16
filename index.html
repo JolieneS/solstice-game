@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHAIN RXN</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="intro-screen">
+    <img src="intro.png" alt="intro" id="intro-img"/>
+</div>
+
+    <h1 id="main-title">❄️☀️ SOLSTICE⚡🍂</h1>
+
+    <div id="rules-screen">
+    <h2>📖 How to Play </h2>
+    <ul>
+        <li>Players pick a season and take turns placing orbs</li>
+        <li>Corner cells hold 2 orbs, edge cells 3, middle cells 4</li>
+        <li>When a cell is full it explodes outward to neighbours</li>
+        <li>Explosions chain react — captured cells become yours</li>
+        <li>First move can be anywhere — after that, only your own cells</li>
+        <li>🌀 Portal cells teleport explosions to a linked cell</li>
+        <li> 3 Power ups (only after the 5th move) :</li>
+        <li>💣 Bomb — clears all cells in a 3x3 area (1 use)</li>
+        <li>❄️ Freeze — skips the next player's turn (1 use)</li>
+        <li>🛡️ Shield — protects your cells from bombs (1 use)</li>
+        <li>Last player with orbs on the board wins!</li>
+    </ul>
+    <button onclick="showSetup()">Let's Play →</button>
+</div>
+
+
+
+    <!-- SETUP SCREEN -->
+    <div id="setup-screen" style="display:none;">
+        <h2>How many players?</h2>
+        <div id="player-count-btns">
+            <button onclick="startGame(2)">2 Players</button>
+            <button onclick="startGame(3)">3 Players</button>
+            <button onclick="startGame(4)">4 Players</button>
+        </div>
+    </div>
+
+    <!-- SEASON SCREEN -->
+    <div id="season-screen" style="display:none;">
+        <h2 id="season-prompt">Player 1 — Pick your season</h2>
+        <div id="season-btns">
+            <button onclick="pickSeason('winter')">❄️ Winter</button>
+            <button onclick="pickSeason('summer')">☀️ Summer</button>
+            <button onclick="pickSeason('monsoon')">🌧️ Monsoon</button>
+            <button onclick="pickSeason('autumn')">🍂 Autumn</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" style="display:none;">
+        <div id="game-layout">
+            <div id="grid"></div>
+            <div id="side-panel">
+                <p id="turn">Player 1's Turn</p>
+                <p id="game-timer">Game Time: 0s</p>
+                <p id="turn-timer">Turn Time: 30s</p>
+                <div id="scores-container"></div>
+                <div id="btn-bar">
+                    <button id="pause-btn" onclick="togglePause()">⏸ Pause</button>
+                    <button id="restart-btn" onclick="restartGame()">🔄 Restart</button>
+                    <button id="bomb-btn" onclick="activateBomb()">💣 Bomb</button>
+                    <button id="freeze-btn" onclick="activateFreeze()">❄️ Freeze</button>
+                    <button id="shield-btn" onclick="activateShield()">🛡️ Shield</button>
+                </div>
+                <div id="history-panel">
+                    <h3>Move History</h3>
+                    <div id="history-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboard-screen" style="display:none;">
+        <h2>🏆 Leaderboard</h2>
+        <div id="leaderboard-list"></div>
+        <button onclick="backToSetup()">Play Again</button>
+    </div>
+
+    <div id="win-popup" style="display:none;">
+    <img id="win-image" src="" alt="season winner"/>
+    <div id="win-content">
+        <h1 id="win-title"></h1>
+        <h2>WINS! 🏆</h2>
+        <button id="win-leaderboard-btn">See Leaderboard</button>
+    </div>
+</div>
+
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+
+</body>
+</html>
