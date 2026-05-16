@@ -50,10 +50,10 @@ body {
 }
 
 
-.p1-color { color: white; }  /* red — match your p1 cell color */
-.p2-color { color: white; }  /* blue */
-.p3-color { color: white; }  /* green */
-.p4-color { color: white; }  /* yellow */
+.p1-color { color: white; }  
+.p2-color { color: white; }  
+.p3-color { color: white; }  
+.p4-color { color: white; }  
 
 
 #turn-timer {

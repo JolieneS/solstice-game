@@ -114,53 +114,16 @@ if (isFirstMove && isPortal(r, c)) {
         firstMove[currentPlayer] = false;
     } 
     else {
-    if (isPortal(r, c) && cellData.count === 0) {
-        
-        const linked = getLinkedPortal(r, c);
-        if (linked) {
-            const [lr, lc] = linked;
-            grid[lr][lc].count += 1;
-            grid[lr][lc].owner = currentPlayer;
-            scores[currentPlayer]++;
-        }
-    } else {
-        
-        cellData.count += 1;
-        cellData.owner = currentPlayer;
-        scores[currentPlayer]++;
-    }
+    // NEVER teleport on direct click — always add normally
+    cellData.count += 1;
+    cellData.owner = currentPlayer;
+    scores[currentPlayer]++;
 }
-
     totalMoves++;
     playSound('place');
 logMove(currentPlayer, r, c, isFirstMove ? ' first' : ' placed');
 
    
-if (isPortal(r, c)) {
-    const linkedPortal = getLinkedPortal(r, c);
-    if (linkedPortal) {
-        const [lr, lc] = linkedPortal;
-        grid[r][c].count = 0;
-        grid[r][c].owner = 0;
-        grid[lr][lc].count += 1;
-        grid[lr][lc].owner = currentPlayer;
-        processChain(currentPlayer);
-        renderBoard();
-        updateScores();
-        const winner = checkWin();
-        if (winner !== 0) {
-            clearInterval(gameTimerInterval);
-            clearInterval(turnTimerInterval);
-            playSound('win');
-            setTimeout(() => showWinPopup(winner), 100);
-            return;
-        }
-        currentPlayer = (currentPlayer % numPlayers) + 1;
-        updateTurnIndicator();
-        startTurnTimer();
-        return;
-    }
-}
 
 processChain(currentPlayer);
 renderBoard();
