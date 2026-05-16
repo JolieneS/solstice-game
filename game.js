@@ -23,7 +23,6 @@ let shieldActive = [null, false, false, false, false];
 let shieldsLeft = [null, 1, 1, 1, 1];
 let lastWinner = 0;
 
-// Initialize Grid Data
 for (let r = 0; r < ROWS; r++) {
     grid[r] = [];
     for (let c = 0; c < COLS; c++) {
@@ -31,7 +30,6 @@ for (let r = 0; r < ROWS; r++) {
     }
 }
 
-// Create Grid Elements
 for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
         const cell = document.createElement('div');
@@ -42,10 +40,6 @@ for (let r = 0; r < ROWS; r++) {
         gridEl.appendChild(cell);
     }
 }
-
-
-
-
 
 const SEASONS = {
     winter: { emoji: '❄️', label: 'Winter', bg: '#d6eaf8' },
@@ -69,7 +63,6 @@ function handleClick(e) {
     const c = parseInt(cellElement.dataset.col);
     const cellData = grid[r][c];
 
-    // Skip frozen players
 if (frozenPlayers[currentPlayer]) {
     frozenPlayers[currentPlayer] = false;
     currentPlayer = (currentPlayer % numPlayers) + 1;
@@ -100,29 +93,21 @@ updateTurnIndicator();
 startTurnTimer();
 return;
 }
-
-    
-    // --- PHASE 2: NEW RULE CHECK ---
    const isFirstMove = firstMove[currentPlayer];
 
-    // If it's NOT their first move, they can ONLY click cells they already own
     if (!isFirstMove && cellData.owner !== currentPlayer) {
         return; 
     }
     
-    // If it IS their first move, they can ONLY click an empty cell
     if (isFirstMove && cellData.owner !== 0) {
     return;
 }
 if (isFirstMove && isPortal(r, c)) {
-    return; // can't place first move on portal
+    return; 
 }
-    // --------------------------------
 
-    // --- PHASE 2: INITIAL PLACEMENT ---
-    // --- PHASE 2 logic ---
     if (isFirstMove) {
-        // Option 1: Sets it to 1 less than max so it stays stable
+       
         cellData.count = getCapacity(r, c) - 1;
         cellData.owner = currentPlayer;
         
@@ -130,7 +115,7 @@ if (isFirstMove && isPortal(r, c)) {
     } 
     else {
     if (isPortal(r, c) && cellData.count === 0) {
-        // portal is empty — teleport to linked cell
+        
         const linked = getLinkedPortal(r, c);
         if (linked) {
             const [lr, lc] = linked;
@@ -139,7 +124,7 @@ if (isFirstMove && isPortal(r, c)) {
             scores[currentPlayer]++;
         }
     } else {
-        // normal cell OR portal that already has orbs — behave normally
+        
         cellData.count += 1;
         cellData.owner = currentPlayer;
         scores[currentPlayer]++;
@@ -150,7 +135,7 @@ if (isFirstMove && isPortal(r, c)) {
     playSound('place');
 logMove(currentPlayer, r, c, isFirstMove ? ' first' : ' placed');
 
-   // Check if placed on portal — teleport immediately
+   
 if (isPortal(r, c)) {
     const linkedPortal = getLinkedPortal(r, c);
     if (linkedPortal) {
@@ -246,12 +231,10 @@ function explode(r, c, player) {
         if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
             const neighbourLinked = getLinkedPortal(nr, nc);
             if (neighbourLinked && grid[nr][nc].count === 0) {
-                // neighbour is empty portal — teleport to linked cell
                 const [lr, lc] = neighbourLinked;
                 grid[lr][lc].count += 1;
                 grid[lr][lc].owner = player;
             } else {
-                // normal cell OR portal already has orbs — add normally
                 grid[nr][nc].count += 1;
                 grid[nr][nc].owner = player;
             }
@@ -289,7 +272,7 @@ function checkWin() {
 
     let activePlayers = [];
     for (let p = 1; p <= numPlayers; p++) {
-        if (!firstMove[p]) {  // only count if they've placed at least once
+        if (!firstMove[p]) { 
             if (cellCounts[p] > 0) activePlayers.push(p);
         }
     }
@@ -311,7 +294,7 @@ function updateScores() {
 }
 
 function startGameTimer() {
-    clearInterval(gameTimerInterval); // prevent double intervals
+    clearInterval(gameTimerInterval); 
     gameTimerInterval = setInterval(() => {
         gameSeconds++;
         document.getElementById('game-timer').textContent = 'Game Time: ' + gameSeconds + 's';
@@ -366,8 +349,6 @@ function restartGame() {
             grid[r][c] = { owner: 0, count: 0 };
         }
     }
-
-    // reset all variables
     currentPlayer = 1;
     totalMoves = 0;
     scores = [null, 0, 0, 0, 0];
@@ -379,7 +360,6 @@ freezesLeft = [null, 1, 1, 1, 1];
 shieldActive = [null, false, false, false, false];
 shieldsLeft = [null, 1, 1, 1, 1];
 
-    // stop old timers before restarting
     clearInterval(gameTimerInterval);
     clearInterval(turnTimerInterval);
     gameSeconds = 0;
@@ -417,7 +397,6 @@ function pickSeason(season) {
     seasonPickIndex++;
 
     if (seasonPickIndex > numPlayers) {
-        // All players picked — start game
         document.getElementById('season-screen').style.display = 'none';
         document.getElementById('game-screen').style.display = 'block';
         restartGame();
@@ -476,11 +455,10 @@ function logMove(player, r, c, action) {
     const entry = document.createElement('div');
     entry.classList.add('history-entry', 'p' + player + '-color');
     entry.textContent = `P${player} → (${r},${c}) ${action}`;
-    list.prepend(entry); // newest at top
+    list.prepend(entry);
 }
 
 function showLeaderboard(winner) {
-    // Build ranked list
     let players = [];
     for (let p = 1; p <= numPlayers; p++) {
         const season = playerSeasons[p];
@@ -488,7 +466,6 @@ function showLeaderboard(winner) {
         players.push({ player: p, score: scores[p], emoji });
     }
 
-    // Sort by score descending
     players.sort((a, b) => b.score - a.score);
 
     const list = document.getElementById('leaderboard-list');
@@ -552,7 +529,7 @@ function showWinPopup(winner) {
     document.getElementById('win-popup').style.display = 'flex';
 }
 
-// Intro splash — shows for 3 seconds then fades out
+
 window.addEventListener('load', () => {
     playIntroSound();
     setTimeout(() => {
