@@ -223,7 +223,7 @@ function processChain(player) {
 }
 
 function checkWin() {
-    if (totalMoves < numPlayers + 1) return 0;
+    if (totalMoves < 2) return 0;
 
     let cellCounts = [null, 0, 0, 0, 0];
     for (let r = 0; r < ROWS; r++) {
