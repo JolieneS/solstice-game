@@ -3,7 +3,7 @@ const COLS = 6;
 const gridEl = document.getElementById("grid");
 let grid = [];
 let gameSeconds = 0;
-let turnSeconds = 30;
+let turnSeconds = 10;
 let gameTimerInterval = null;
 let turnTimerInterval = null;
 let totalMoves = 0;
@@ -12,11 +12,11 @@ let numPlayers = 2;
 let firstMove = [null, true, true, true, true];
 let scores = [null, 0, 0, 0, 0];
 let isPaused = false;
-let playerSeasons = [null, null, null, null, null]; // index = player number
+let playerSeasons = [null, null, null, null, null]; 
 let seasonPickIndex = 1;
 let bombMode = false;
 let bombsLeft = [null, 1, 1, 1, 1];
-let moveHistory = []; // each player gets 1 bomb
+let moveHistory = []; 
 let frozenPlayers = [null, false, false, false, false];
 let freezesLeft = [null, 1, 1, 1, 1];
 let shieldActive = [null, false, false, false, false];
@@ -49,8 +49,8 @@ const SEASONS = {
 };
 
 const PORTALS = [
-    { a: [2, 1], b: [9, 4] },   // Portal pair 1
-    { a: [5, 0], b: [6, 5] },   // Portal pair 2
+    { a: [2, 1], b: [9, 4] },  
+    { a: [5, 0], b: [6, 5] },   
 ];
 
 
@@ -114,7 +114,7 @@ if (isFirstMove && isPortal(r, c)) {
         firstMove[currentPlayer] = false;
     } 
     else {
-    // NEVER teleport on direct click — always add normally
+    
     cellData.count += 1;
     cellData.owner = currentPlayer;
     scores[currentPlayer]++;
@@ -266,14 +266,37 @@ function startGameTimer() {
 
 function startTurnTimer() {
     clearInterval(turnTimerInterval);
-    turnSeconds = 30;
-    document.getElementById('turn-timer').textContent = 'Turn Time: 30s';
+    turnSeconds = 10;
+    document.getElementById('turn-timer').textContent = 'Turn Time: 10s';
 
     turnTimerInterval = setInterval(() => {
         turnSeconds--;
         document.getElementById('turn-timer').textContent = 'Turn Time: ' + turnSeconds + 's';
         if (turnSeconds <= 0) {
             clearInterval(turnTimerInterval);
+
+            firstMove[currentPlayer] = false;
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (grid[r][c].owner === currentPlayer) {
+                        grid[r][c].count = 0;
+                        grid[r][c].owner = 0;
+                    }
+                }
+            }
+
+            totalMoves++;
+            renderBoard();
+
+            const winner = checkWin();
+            if (winner !== 0) {
+                clearInterval(gameTimerInterval);
+                clearInterval(turnTimerInterval);
+                playSound('win');
+                setTimeout(() => showWinPopup(winner), 100);
+                return;
+            }
+
             currentPlayer = (currentPlayer % numPlayers) + 1;
             updateTurnIndicator();
             startTurnTimer();
